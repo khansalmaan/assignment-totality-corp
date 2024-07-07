@@ -1,0 +1,34 @@
+
+syntax = "proto3";
+
+option go_package = "assignment-totality-corp/userservice";
+
+// The package name should reflect the API domain
+package userservice;
+
+service UserService {
+  // RPC method for retrieving a user by their ID
+  rpc GetUserById (GetUserRequest) returns (UserResponse) {}
+  
+  // RPC method for retrieving multiple users by their IDs
+  rpc GetUsersByIds(GetUsersRequest) returns (GetUsersResponse) {}
+}
+
+message UserResponse {
+  int32 id = 1;       // User ID
+  string name = 2;    // User name
+  string email = 3;   // User email
+}
+
+message GetUserRequest {
+  int32 id = 1;       // The ID of the user to retrieve
+}
+
+message GetUsersRequest {
+  repeated int32 ids = 1;  // List of user IDs to retrieve
+}
+
+// Response message for retrieving multiple users
+message GetUsersResponse {
+  repeated UserResponse users = 1;  // List of user responses
+}

@@ -21,7 +21,7 @@ func main() {
 	}
 
 	s := grpc.NewServer()
-	pb.RegisterHelloWorldServiceServer(s, server.NewExampleService())
+	pb.RegisterUserServiceServer(s, server.NewExampleService())
 
 	log.Printf("Server is running on %s", cfg.Server.Address)
 	if err := s.Serve(lis); err != nil {
