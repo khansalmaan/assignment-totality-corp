@@ -2,6 +2,7 @@ package server
 
 import (
 	"context"
+	"fmt"
 
 	pb "assignment-totality-corp/api/proto/totality-corp/userservice"
 	"assignment-totality-corp/internal/service"
@@ -48,5 +49,22 @@ func (s *userService) GetUsersByIds(ctx context.Context, req *pb.GetUsersRequest
 }
 
 func (s *userService) SearchUsers(ctx context.Context, req *pb.SearchUsersRequest) (*pb.SearchUsersResponse, error) {
-	return nil, nil
+
+	fmt.Println("SearchUsersRequest: ", req)
+
+	users := s.userService.SearchUsers(req.Fname, req.City, req.Phone, req.MinHeight, req.MaxHeight, req.Married)
+
+	var usersRes []*pb.UserResponse
+	for _, user := range users {
+		usersRes = append(usersRes, &pb.UserResponse{
+			Id:      user.ID,
+			Fname:   user.FName,
+			City:    user.City,
+			Phone:   user.Phone,
+			Height:  user.Height,
+			Married: user.Married,
+		})
+	}
+
+	return &pb.SearchUsersResponse{Users: usersRes}, nil
 }

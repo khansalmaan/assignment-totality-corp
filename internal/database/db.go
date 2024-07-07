@@ -5,6 +5,7 @@ import "assignment-totality-corp/internal/model"
 type IDatabase interface {
 	GetUser(int32) (model.User, error)
 	GetUserList([]int32) ([]model.User, error)
+	GetUsers() ([]model.User, error)
 	AddUser(model.User) (model.User, error)
 	RemoveUser(int32) (model.User, error)
 }
@@ -44,6 +45,15 @@ func NewDatabase() Database {
 		Married: false,
 	}
 
+	users[4] = model.User{
+		ID:      4,
+		FName:   "David",
+		City:    "New York",
+		Phone:   1234567890,
+		Height:  5.5,
+		Married: true,
+	}
+
 	return Database{Users: users}
 }
 
@@ -79,4 +89,12 @@ func (db *Database) RemoveUser(id int32) (model.User, error) {
 	}
 	delete(db.Users, id)
 	return user, nil
+}
+
+func (db *Database) GetUsers() ([]model.User, error) {
+	users := make([]model.User, 0)
+	for _, user := range db.Users {
+		users = append(users, user)
+	}
+	return users, nil
 }
