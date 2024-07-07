@@ -5,7 +5,6 @@ import (
 	"net"
 
 	pb "assignment-totality-corp/api/proto/totality-corp/userservice"
-
 	"assignment-totality-corp/internal/config"
 	"assignment-totality-corp/internal/database"
 	"assignment-totality-corp/internal/server"
