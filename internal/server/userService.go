@@ -3,43 +3,50 @@ package server
 import (
 	"context"
 
-	pb "assignment-totality-corp/api/proto"
+	pb "assignment-totality-corp/api/proto/totality-corp/userservice"
+	"assignment-totality-corp/internal/service"
 )
 
-// exampleService implements the UserServiceServer interface from the generated protobuf code.
-type exampleService struct {
+type userService struct {
+	userService service.IUserService
 	pb.UnimplementedUserServiceServer
 }
 
-// NewExampleService creates and returns a new instance of the exampleService.
-func NewExampleService() pb.UserServiceServer {
-	return &exampleService{}
+func NewUserService(us service.IUserService) pb.UserServiceServer {
+	return &userService{
+		userService: us,
+	}
 }
 
-// Implement your gRPC methods here. For example:
-
-// GetUserById handles the RPC call to get a user by their ID.
-func (s *exampleService) GetUserById(ctx context.Context, req *pb.GetUserRequest) (*pb.UserResponse, error) {
-	// Implement the logic to retrieve a user by ID
-	// Example implementation:
+func (s *userService) GetUserById(ctx context.Context, req *pb.GetUserRequest) (*pb.UserResponse, error) {
+	user := s.userService.GetUserById(req.Id)
 	return &pb.UserResponse{
-		Id:    req.Id,
-		Name:  "Example User",
-		Email: "example@example.com",
+		Id:      user.ID,
+		Fname:   user.FName,
+		City:    user.City,
+		Phone:   user.Phone,
+		Height:  user.Height,
+		Married: user.Married,
 	}, nil
 }
 
-// GetUsersByIds handles the RPC call to get multiple users by their IDs.
-func (s *exampleService) GetUsersByIds(ctx context.Context, req *pb.GetUsersRequest) (*pb.GetUsersResponse, error) {
-	// Implement the logic to retrieve multiple users by IDs
-	// Example implementation:
-	var users []*pb.UserResponse
-	for _, id := range req.Ids {
-		users = append(users, &pb.UserResponse{
-			Id:    id,
-			Name:  "Example User",
-			Email: "example@example.com",
+func (s *userService) GetUsersByIds(ctx context.Context, req *pb.GetUsersRequest) (*pb.GetUsersResponse, error) {
+
+	users := s.userService.GetUserByIds(req.Ids)
+	var usersRes []*pb.UserResponse
+	for _, user := range users {
+		usersRes = append(usersRes, &pb.UserResponse{
+			Id:      user.ID,
+			Fname:   user.FName,
+			City:    user.City,
+			Phone:   user.Phone,
+			Height:  user.Height,
+			Married: user.Married,
 		})
 	}
-	return &pb.GetUsersResponse{Users: users}, nil
+	return &pb.GetUsersResponse{Users: usersRes}, nil
+}
+
+func (s *userService) SearchUsers(ctx context.Context, req *pb.SearchUsersRequest) (*pb.SearchUsersResponse, error) {
+	return nil, nil
 }

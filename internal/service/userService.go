@@ -6,8 +6,8 @@ import (
 )
 
 type IUserService interface {
-	GetUserById(int) model.User
-	GetUserByIds([]int) []model.User
+	GetUserById(int32) model.User
+	GetUserByIds([]int32) []model.User
 }
 
 type UserService struct {
@@ -19,12 +19,12 @@ func NewUserService(db database.IDatabase) IUserService {
 	return &UserService{db: db}
 }
 
-func (us *UserService) GetUserById(id int) model.User {
+func (us *UserService) GetUserById(id int32) model.User {
 	user, _ := us.db.GetUser(id)
 	return user
 }
 
-func (us *UserService) GetUserByIds(ids []int) []model.User {
+func (us *UserService) GetUserByIds(ids []int32) []model.User {
 	users, _ := us.db.GetUserList(ids)
 	return users
 }

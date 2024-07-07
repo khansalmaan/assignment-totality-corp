@@ -1,7 +1,7 @@
 package model
 
 type User struct {
-	ID      int     `json:"id"`
+	ID      int32   `json:"id"`
 	FName   string  `json:"fname"`
 	City    string  `json:"city"`
 	Phone   int64   `json:"phone"` // Using int64 for phone numbers to avoid overflow

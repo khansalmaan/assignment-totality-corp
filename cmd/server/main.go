@@ -4,9 +4,12 @@ import (
 	"log"
 	"net"
 
-	pb "assignment-totality-corp/api/proto"
+	pb "assignment-totality-corp/api/proto/totality-corp/userservice"
+
 	"assignment-totality-corp/internal/config"
+	"assignment-totality-corp/internal/database"
 	"assignment-totality-corp/internal/server"
+	"assignment-totality-corp/internal/service"
 
 	"google.golang.org/grpc"
 )
@@ -21,7 +24,14 @@ func main() {
 	}
 
 	s := grpc.NewServer()
-	pb.RegisterUserServiceServer(s, server.NewExampleService())
+	// Create a new database
+	db := database.NewDatabase()
+
+	// create a new user service
+	us := service.NewUserService(&db)
+
+	// Register the user service with the gRPC server
+	pb.RegisterUserServiceServer(s, server.NewUserService(us))
 
 	log.Printf("Server is running on %s", cfg.Server.Address)
 	if err := s.Serve(lis); err != nil {
