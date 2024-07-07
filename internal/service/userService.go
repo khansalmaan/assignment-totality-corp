@@ -8,7 +8,16 @@ import (
 type IUserService interface {
 	GetUserById(int32) model.User
 	GetUserByIds([]int32) []model.User
-	SearchUsers(string, string, int64, float64, float64, bool) []model.User
+	SearchUsers(SearchUsersRequest) []model.User
+}
+
+type SearchUsersRequest struct {
+	Fname     string
+	City      string
+	Phone     int64
+	MinHeight float64
+	MaxHeight float64
+	Married   *bool
 }
 
 type UserService struct {
@@ -30,7 +39,7 @@ func (us *UserService) GetUserByIds(ids []int32) []model.User {
 	return users
 }
 
-func (us *UserService) SearchUsers(fname, city string, phone int64, minHeight, maxHeight float64, married bool) []model.User {
+func (us *UserService) SearchUsers(searchReq SearchUsersRequest) []model.User {
 	// get all users
 	users, _ := us.db.GetUsers()
 
@@ -38,22 +47,22 @@ func (us *UserService) SearchUsers(fname, city string, phone int64, minHeight, m
 
 	// filter users based on search criteria
 	for i := 0; i < len(users); i++ {
-		if fname != "" && users[i].FName != fname {
+		if searchReq.Fname != "" && users[i].FName != searchReq.Fname {
 			continue
 		}
-		if city != "" && users[i].City != city {
+		if searchReq.City != "" && users[i].City != searchReq.City {
 			continue
 		}
-		if phone != 0 && users[i].Phone != phone {
+		if searchReq.Phone != 0 && users[i].Phone != searchReq.Phone {
 			continue
 		}
-		if minHeight != 0 && users[i].Height < minHeight {
+		if searchReq.MinHeight != 0 && users[i].Height < searchReq.MinHeight {
 			continue
 		}
-		if maxHeight != 0 && users[i].Height > maxHeight {
+		if searchReq.MaxHeight != 0 && users[i].Height > searchReq.MaxHeight {
 			continue
 		}
-		if married && !users[i].Married {
+		if searchReq.Married != nil && users[i].Married != *searchReq.Married {
 			continue
 		}
 

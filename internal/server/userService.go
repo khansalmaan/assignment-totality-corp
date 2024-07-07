@@ -48,7 +48,20 @@ func (s *userService) GetUsersByIds(ctx context.Context, req *pb.GetUsersRequest
 }
 
 func (s *userService) SearchUsers(ctx context.Context, req *pb.SearchUsersRequest) (*pb.SearchUsersResponse, error) {
-	users := s.userService.SearchUsers(req.Fname, req.City, req.Phone, req.MinHeight, req.MaxHeight, req.Married)
+
+	SearchUsersRequest := service.SearchUsersRequest{
+		Fname:     req.Fname,
+		City:      req.City,
+		Phone:     req.Phone,
+		MinHeight: req.MinHeight,
+		MaxHeight: req.MaxHeight,
+	}
+
+	if req.Married != nil {
+		SearchUsersRequest.Married = &req.Married.Value
+	}
+
+	users := s.userService.SearchUsers(SearchUsersRequest)
 
 	var usersRes []*pb.UserResponse
 	for _, user := range users {

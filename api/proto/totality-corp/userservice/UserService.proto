@@ -2,6 +2,9 @@ syntax = "proto3";
 
 option go_package = "totality-corp/userservice";
 
+import "google/protobuf/wrappers.proto";
+
+
 package userservice;
 
 service UserService {
@@ -47,7 +50,8 @@ message SearchUsersRequest {
   int64 phone = 3;    // Filter by phone number
   double minHeight = 4; // Filter by minimum height
   double maxHeight = 5; // Filter by maximum height
-  bool married = 6;  // Filter by marital status (optional)
+  google.protobuf.BoolValue married = 6; // Filter by marital status (optional)
+
 }
 
 // Response message for searching users based on specific criteria
