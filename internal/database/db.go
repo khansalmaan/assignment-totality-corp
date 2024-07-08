@@ -1,6 +1,11 @@
 package database
 
-import "assignment-totality-corp/internal/model"
+import (
+	"errors"
+
+	"assignment-totality-corp/internal/constants"
+	"assignment-totality-corp/internal/model"
+)
 
 type IDatabase interface {
 	GetUser(int32) (model.User, error)
@@ -60,7 +65,7 @@ func NewDatabase() Database {
 func (db *Database) GetUser(id int32) (model.User, error) {
 	user, ok := db.Users[id]
 	if !ok {
-		return model.User{}, nil
+		return model.User{}, errors.New(constants.ErrUserNotFound)
 	}
 	return user, nil
 }

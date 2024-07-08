@@ -6,9 +6,9 @@ import (
 )
 
 type IUserService interface {
-	GetUserById(int32) model.User
-	GetUserByIds([]int32) []model.User
-	SearchUsers(SearchUsersRequest) []model.User
+	GetUserById(int32) (model.User, error)
+	GetUserByIds([]int32) ([]model.User, error)
+	SearchUsers(SearchUsersRequest) ([]model.User, error)
 }
 
 type SearchUsersRequest struct {
@@ -29,19 +29,29 @@ func NewUserService(db database.IDatabase) IUserService {
 	return &UserService{db: db}
 }
 
-func (us *UserService) GetUserById(id int32) model.User {
-	user, _ := us.db.GetUser(id)
-	return user
+func (us *UserService) GetUserById(id int32) (model.User, error) {
+	user, err := us.db.GetUser(id)
+	if err != nil {
+		return model.User{}, err
+	}
+
+	return user, nil
 }
 
-func (us *UserService) GetUserByIds(ids []int32) []model.User {
-	users, _ := us.db.GetUserList(ids)
-	return users
+func (us *UserService) GetUserByIds(ids []int32) ([]model.User, error) {
+	users, err := us.db.GetUserList(ids)
+	if err != nil {
+		return nil, err
+	}
+	return users, nil
 }
 
-func (us *UserService) SearchUsers(searchReq SearchUsersRequest) []model.User {
+func (us *UserService) SearchUsers(searchReq SearchUsersRequest) ([]model.User, error) {
 	// get all users
-	users, _ := us.db.GetUsers()
+	users, err := us.db.GetUsers()
+	if err != nil {
+		return nil, err
+	}
 
 	filteredUsers := make([]model.User, 0)
 
@@ -69,5 +79,5 @@ func (us *UserService) SearchUsers(searchReq SearchUsersRequest) []model.User {
 		filteredUsers = append(filteredUsers, users[i])
 	}
 
-	return filteredUsers
+	return filteredUsers, nil
 }

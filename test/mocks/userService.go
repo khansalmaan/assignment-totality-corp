@@ -12,17 +12,17 @@ type MockUserService struct {
 	mock.Mock
 }
 
-func (m *MockUserService) GetUserById(id int32) model.User {
+func (m *MockUserService) GetUserById(id int32) (model.User, error) {
 	args := m.Called(id)
-	return args.Get(0).(model.User)
+	return args.Get(0).(model.User), args.Error(1)
 }
 
-func (m *MockUserService) GetUserByIds(ids []int32) []model.User {
+func (m *MockUserService) GetUserByIds(ids []int32) ([]model.User, error) {
 	args := m.Called(ids)
-	return args.Get(0).([]model.User)
+	return args.Get(0).([]model.User), nil
 }
 
-func (m *MockUserService) SearchUsers(req service.SearchUsersRequest) []model.User {
+func (m *MockUserService) SearchUsers(req service.SearchUsersRequest) ([]model.User, error) {
 	args := m.Called(req)
-	return args.Get(0).([]model.User)
+	return args.Get(0).([]model.User), nil
 }

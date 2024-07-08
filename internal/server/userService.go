@@ -4,7 +4,11 @@ import (
 	"context"
 
 	pb "assignment-totality-corp/api/proto/totality-corp/userservice"
+	"assignment-totality-corp/internal/constants"
 	"assignment-totality-corp/internal/service"
+
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 type userService struct {
@@ -19,7 +23,15 @@ func NewUserService(us service.IUserService) pb.UserServiceServer {
 }
 
 func (s *userService) GetUserById(ctx context.Context, req *pb.GetUserRequest) (*pb.UserResponse, error) {
-	user := s.userService.GetUserById(req.Id)
+	user, err := s.userService.GetUserById(req.Id)
+	if err != nil {
+		// Check the type of error and return appropriate gRPC status code
+		if err.Error() == constants.ErrUserNotFound {
+			return nil, status.Errorf(codes.NotFound, "user with ID %s not found", string(req.Id))
+		}
+		// Return internal server error for other cases
+		return nil, status.Errorf(codes.Internal, "internal server error: %v", err)
+	}
 	return &pb.UserResponse{
 		Id:      user.ID,
 		Fname:   user.FName,
@@ -32,7 +44,11 @@ func (s *userService) GetUserById(ctx context.Context, req *pb.GetUserRequest) (
 
 func (s *userService) GetUsersByIds(ctx context.Context, req *pb.GetUsersRequest) (*pb.GetUsersResponse, error) {
 
-	users := s.userService.GetUserByIds(req.Ids)
+	users, err := s.userService.GetUserByIds(req.Ids)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "internal server error: %v", err)
+	}
+
 	var usersRes []*pb.UserResponse
 	for _, user := range users {
 		usersRes = append(usersRes, &pb.UserResponse{
@@ -61,7 +77,10 @@ func (s *userService) SearchUsers(ctx context.Context, req *pb.SearchUsersReques
 		SearchUsersRequest.Married = &req.Married.Value
 	}
 
-	users := s.userService.SearchUsers(SearchUsersRequest)
+	users, err := s.userService.SearchUsers(SearchUsersRequest)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "internal server error: %v", err)
+	}
 
 	var usersRes []*pb.UserResponse
 	for _, user := range users {
