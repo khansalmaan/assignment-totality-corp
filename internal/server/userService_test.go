@@ -7,7 +7,7 @@ import (
 	pb "assignment-totality-corp/api/proto/totality-corp/userservice"
 	"assignment-totality-corp/internal/model"
 	"assignment-totality-corp/internal/service"
-	"assignment-totality-corp/test/mocks"
+	mocks "assignment-totality-corp/test/mocks/service"
 
 	"github.com/stretchr/testify/assert"
 )

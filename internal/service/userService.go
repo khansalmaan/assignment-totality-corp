@@ -47,6 +47,11 @@ func (us *UserService) GetUserByIds(ids []int32) ([]model.User, error) {
 }
 
 func (us *UserService) SearchUsers(searchReq SearchUsersRequest) ([]model.User, error) {
+	// if not search criteria provided, return empty list
+	if searchReq.Fname == "" && searchReq.City == "" && searchReq.Phone == 0 && searchReq.MinHeight == 0 && searchReq.MaxHeight == 0 && searchReq.Married == nil {
+		return []model.User{}, nil
+	}
+
 	// get all users
 	users, err := us.db.GetUsers()
 	if err != nil {

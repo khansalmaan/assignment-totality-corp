@@ -1,4 +1,4 @@
-package mocks
+package serviceMocks
 
 import (
 	"assignment-totality-corp/internal/model"
@@ -14,7 +14,7 @@ type MockUserService struct {
 
 func (m *MockUserService) GetUserById(id int32) (model.User, error) {
 	args := m.Called(id)
-	return args.Get(0).(model.User), args.Error(1)
+	return args.Get(0).(model.User), nil
 }
 
 func (m *MockUserService) GetUserByIds(ids []int32) ([]model.User, error) {
