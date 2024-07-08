@@ -44,3 +44,10 @@ status:
 test:
 	@echo "Running tests..."
 	go test ./...
+
+# Show test coverage
+.PHONY: coverage
+coverage:
+	@echo "Running test coverage..."
+	go test -coverprofile=coverage.out ./...
+	go tool cover -html=coverage.out
